@@ -36,9 +36,9 @@
 | `id`            | SERIAL       | ✅  | NO       | Auto-increment ID                             |
 | `username`      | VARCHAR(100) |     | NO       | ชื่อผู้ใช้งาน (unique)                        |
 | `password_hash` | VARCHAR(255) |     | NO       | รหัสผ่านที่เข้ารหัสด้วย bcrypt               |
-| `role`          | VARCHAR(50)  |     | NO       | บทบาท: `pharmacist` / `nurse`       |
+| `role`          | VARCHAR(50)  |     | NO       | บทบาท: `pharmacist` / `nurse` / `doctor` |
 | `name`          | VARCHAR(255) |     | YES      | ชื่อแสดงผล                                    |
-| `title`         | VARCHAR(100) |     | YES      | ตำแหน่ง เช่น `เภสัชกร` / `พยาบาล`           |
+| `title`         | VARCHAR(100) |     | YES      | ตำแหน่ง เช่น `เภสัชกร` / `พยาบาล` / `แพทย์` |
 | `is_active`     | BOOLEAN      |     | YES      | สถานะใช้งาน (default: true)                   |
 
 ---
@@ -200,7 +200,8 @@ Response:
 }
 ```
 
-> Token มีอายุ **8 ชั่วโมง** (กำหนดใน `JWT_EXPIRES`)
+> Token มีอายุ **8 ชั่วโมง** (กำหนดใน `JWT_EXPIRES`)  
+> ค่า `role` ที่เป็นไปได้: `pharmacist` / `nurse` / `doctor`
 
 ---
 
@@ -564,7 +565,7 @@ erDiagram
         serial  id PK
         varchar username
         varchar password_hash
-        varchar role
+        varchar role "pharmacist | nurse | doctor"
         varchar name
         varchar title
         boolean is_active
@@ -595,19 +596,22 @@ PORT=5000
 
 ## 🔐 Auth & Role Matrix
 
-| Endpoint                  | ทุก role | pharmacist เท่านั้น |
-|---------------------------|----------|---------------------|
-| GET /api/patients         | ✅       |                     |
-| POST /api/patients        |          | ✅                  |
-| PUT /api/patients/:hn     |          | ✅                  |
-| GET /api/records          | ✅       |                     |
-| POST /api/records         | ✅       |                     |
-| PUT /api/records/:id      | ✅       |                     |
-| DELETE /api/records/:id   |          | ✅                  |
-| POST /api/encounters      | ✅       |                     |
-| GET /api/stats            | ✅       |                     |
-| GET /api/report/*         | ✅       |                     |
-| POST backfill-encounters  |          | ✅                  |
+| Endpoint                  | ทุก role (nurse / doctor / pharmacist) | pharmacist เท่านั้น |
+|---------------------------|----------------------------------------|---------------------|
+| GET /api/patients         | ✅                                     |                     |
+| POST /api/patients        |                                        | ✅                  |
+| PUT /api/patients/:hn     |                                        | ✅                  |
+| GET /api/records          | ✅                                     |                     |
+| POST /api/records         | ✅                                     |                     |
+| PUT /api/records/:id      | ✅                                     |                     |
+| DELETE /api/records/:id   |                                        | ✅                  |
+| POST /api/encounters      | ✅                                     |                     |
+| GET /api/stats            | ✅                                     |                     |
+| GET /api/report/*         | ✅                                     |                     |
+| POST backfill-encounters  |                                        | ✅                  |
+
+> **หมายเหตุ Role**: `doctor` มีสิทธิ์เทียบเท่า `nurse` — บันทึก ADR, ดู Record, ดูรายงาน และ Dashboard ได้  
+> การลบ Record และจัดการข้อมูลผู้ป่วย (เพิ่ม/แก้ไข) สงวนไว้สำหรับ `pharmacist` เท่านั้น
 
 ---
 

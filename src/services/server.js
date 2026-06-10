@@ -657,7 +657,7 @@ app.post("/api/records", requireAuth, async (req, res) => {
 });
 
 /** PUT /api/records/:id */
-app.put("/api/records/:id", requireAuth, async (req, res) => {
+app.put("/api/records/:id", requireAuth, requirePharmacist, async (req, res) => {
   const { cycle, dose, dose_unit, drugs, symptoms, note, recommendation, follow_up_date } = req.body || {};
   const client = await pool.connect();
   try {

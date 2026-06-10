@@ -10,7 +10,7 @@
 
 ### 🔐 ระบบ Authentication
 - เข้าสู่ระบบด้วย Username / Password (JWT-based)
-- แบ่ง Role: `pharmacist` และ `nurse` — มีสิทธิ์การใช้งานต่างกัน
+- แบ่ง Role: `pharmacist`, `nurse` และ `doctor` — มีสิทธิ์การใช้งานต่างกัน
 - Token มีอายุ 8 ชั่วโมง และแนบ Authorization header อัตโนมัติทุก request
 
 ### 📋 บันทึก ADR (Step-by-step Form)
@@ -160,12 +160,20 @@ Base URL: `http://localhost:5000/api`
 
 > ตั้งค่า user เริ่มต้นได้ใน table `users` ผ่าน Neon SQL Editor
 
-| Username      | Role        | คำอธิบาย                          |
-|---------------|-------------|-----------------------------------|
-| pharmacist01  | pharmacist  | เภสัชกร — สิทธิ์เต็ม (รวมถึงลบ)   |
-| nurse01       | nurse       | พยาบาล — บันทึกและดูรายงานได้      |
+| Username      | Role        | คำอธิบาย                                            |
+|---------------|-------------|-----------------------------------------------------|
+| pharmacist01  | pharmacist  | เภสัชกร — สิทธิ์เต็ม (รวมถึงลบ และจัดการข้อมูลผู้ป่วย) |
+| nurse01       | nurse       | พยาบาล — บันทึก ADR และดูรายงานได้                   |
+| doctor01      | doctor      | แพทย์ — บันทึก ADR และดูรายงานได้ (สิทธิ์เทียบเท่าพยาบาล) |
 
-Password จะถูก hash ด้วย bcrypt ก่อนบันทึก
+> **หมายเหตุ**: `doctor` มีสิทธิ์เหมือน `nurse` ทุกประการ — ลบ Record และแก้ไขข้อมูลผู้ป่วยไม่ได้  
+> Password จะถูก hash ด้วย bcrypt ก่อนบันทึก
+
+**SQL สำหรับเพิ่ม doctor ใน Neon:**
+```sql
+INSERT INTO users (username, password_hash, role, name, title, is_active)
+VALUES ('doctor01', crypt('your_password', gen_salt('bf')), 'doctor', 'นพ.ชื่อ นามสกุล', 'แพทย์', true);
+```
 
 ---
 
@@ -178,6 +186,7 @@ Password จะถูก hash ด้วย bcrypt ก่อนบันทึก
 
 และ 1 View: `view_adr_summary` — ใช้ query ข้อมูลหน้า Records และ Dashboard
 
+> `users.role` รองรับ 3 ค่า: `pharmacist` / `nurse` / `doctor`  
 > ดูโครงสร้างตาราง, column types, relation และ ER Diagram ได้ที่ **[SCHEMA.md](./SCHEMA.md)**
 
 ---
