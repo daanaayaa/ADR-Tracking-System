@@ -375,6 +375,17 @@ app.get("/api/drugs", requireAuth, async (req, res) => {
   }
 });
 
+app.get("/api/drugs", requireAuth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      "SELECT id, name FROM drugs WHERE is_active = TRUE ORDER BY name"
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 // ─────────────────────────────────────────────
 //  CTCAE
