@@ -12,6 +12,8 @@
 - เข้าสู่ระบบด้วย Username / Password (JWT-based)
 - แบ่ง Role: `pharmacist`, `nurse` และ `doctor` — มีสิทธิ์การใช้งานต่างกัน
 - Token มีอายุ 8 ชั่วโมง และแนบ Authorization header อัตโนมัติทุก request
+- `pharmacist`, `nurse` และ `doctor01`  PASS = 54321
+
 
 ### 📋 บันทึก ADR (Step-by-step Form)
 - **Step 1** — ค้นหาผู้ป่วยจาก HN, เลือก Encounter (OPD/IPD), ระบุวันที่ / Cycle / Dose / รายการยา  
