@@ -14,7 +14,6 @@
 - Token มีอายุ 8 ชั่วโมง และแนบ Authorization header อัตโนมัติทุก request
 =======
 - `pharmacist`, `nurse`, `doctor` = pass 54321
->>>>>>> f9e79d2 (update backend and schema)
 
 ### บันทึก ADR (Step-by-step Form)
 - **Step 1** — ค้นหาผู้ป่วยจาก HN, เลือก Encounter (OPD/IPD), ระบุวันที่ / Cycle / Dose / รายการยา  
@@ -42,7 +41,6 @@
 - **Monthly Summary tab** — ตารางสรุปรายเดือน: Visits, ADR Events, ADR/Visit, G3+
 - **Compare Regimen tab** — เปรียบเทียบสูตรยาสูงสุด 3 กลุ่ม
 - Export CSV 
->>>>>>> f9e79d2 (update backend and schema)
 
 ---
 
