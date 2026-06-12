@@ -21,7 +21,6 @@
   รองรับการเพิ่มยานอกบัญชีใหม่เข้า Drug Master ได้ทันที (`POST /api/drugs`)
 - **Step 2** — เลือกอาการ ADR ตามมาตรฐาน CTCAE จัดกลุ่มตาม category พร้อมระบุ Grade 1–5  
   รองรับอาการ custom นอกเหนือจาก CTCAE มาตรฐาน
-- บันทึก Recommendation, หมายเหตุ และวันนัดติดตาม
 
 ### Dashboard
 - สรุปสถิติประจำเดือน: จำนวน Records, ADR Rate, Grade 3+ Events
