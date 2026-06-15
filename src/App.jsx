@@ -16,6 +16,10 @@ const PAGE_TITLES = {
   reports:    "Reports",
 };
 
+// ── DEV BYPASS: ?dev=1 ข้ามหน้า login (ลบออกก่อน deploy จริง) ──
+const DEV_USER = { role: "pharmacist", name: "ทดสอบ", title: "เภสัชกร" };
+const IS_DEV   = new URLSearchParams(location.search).get("dev") === "1";
+
 function loadRecords() {
   try {
     const raw = JSON.parse(localStorage.getItem("patientRecords") || "[]");
@@ -30,6 +34,7 @@ function loadRecords() {
 }
 
 function loadUser() {
+  if (IS_DEV) return DEV_USER;
   try {
     const raw = sessionStorage.getItem("adrUser");
     return raw ? JSON.parse(raw) : null;
@@ -37,16 +42,27 @@ function loadUser() {
     return null;
   }
 }
+
 function saveUser(user) {
+  if (IS_DEV) return; // dev mode ไม่ต้อง save
   if (user) sessionStorage.setItem("adrUser", JSON.stringify(user));
   else sessionStorage.removeItem("adrUser");
 }
 
 function loadPage() {
+  // อ่านจาก ?page= ก่อน ถ้าไม่มีค่อย fallback sessionStorage
+  const urlPage = new URLSearchParams(location.search).get("page");
+  const valid   = Object.keys(PAGE_TITLES);
+  if (urlPage && valid.includes(urlPage)) return urlPage;
   return sessionStorage.getItem("adrPage") || "dashboard";
 }
+
 function savePage(page) {
   sessionStorage.setItem("adrPage", page);
+  // sync URL โดยไม่ reload
+  const sp = new URLSearchParams(location.search);
+  sp.set("page", page);
+  history.replaceState(null, "", "?" + sp.toString());
 }
 
 const INITIAL_VITAL = { date: "", cycle: "", dose: "", doseUnit: "", drugs: [] };
@@ -90,6 +106,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    if (IS_DEV) return; // dev mode ไม่ให้ logout ออก
     setUser(null);
     savePage("dashboard");
     setPageState("dashboard");
@@ -119,10 +136,9 @@ function App() {
     setStep(1);
   };
 
-  // เรียกหลัง Step2 บันทึกสำเร็จ: reset form + trigger Records refetch + navigate
   const handleSaveSuccess = () => {
     resetAssessment();
-    setRecordsRefreshKey((k) => k + 1); // บอก Records ให้ดึงข้อมูลใหม่ + reset filter
+    setRecordsRefreshKey((k) => k + 1);
     handleSetPage("records");
   };
 
@@ -144,6 +160,18 @@ function App() {
 
       <main className="flex-1 flex flex-col min-w-0">
         <Topbar title={PAGE_TITLES[page] || page} user={user} onLogout={handleLogout} />
+
+        {/* แถบเตือน dev mode */}
+        {IS_DEV && (
+          <div style={{
+            background: "#fef3c7", borderBottom: "1px solid #fcd34d",
+            padding: "6px 24px", fontSize: "12px", color: "#92400e",
+            display: "flex", alignItems: "center", gap: "8px",
+          }}>
+            <span>⚠️</span>
+            <span><strong>DEV MODE</strong> — ข้ามการล็อกอิน / ลบ <code>?dev=1</code> ออกจาก URL ก่อน deploy จริง</span>
+          </div>
+        )}
 
         <div className="p-6">
           {page === "dashboard" && <Dashboard setPage={handleSetPage} />}
@@ -214,7 +242,7 @@ function App() {
         </div>
       </main>
 
-      {/* ── Record Detail POPUP — rendered on top of everything, not replacing the page ── */}
+      {/* ── Record Detail POPUP ── */}
       {detailId && (
         <RecordDetail
           id={detailId}

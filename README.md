@@ -67,14 +67,19 @@ npm install
 ### 2. ตั้งค่าไฟล์ `.env`
 
 สร้างไฟล์ `.env` ที่ root ของโปรเจกต์:
-
 ```env
-# Neon PostgreSQL
-PGHOST=your-neon-host.neon.tech
-PGPORT=5432
-PGDATABASE=neondb
-PGUSER=neondb_owner
-PGPASSWORD=your_password
+# ADR-T — MySQL Local Configuration
+# แก้ค่าด้านล่างให้ตรงกับ MySQL server ของโรงพยาบาล
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=adrt_db
+DB_USER=root
+DB_PASSWORD=your_password_here
+
+JWT_SECRET=adr-secret-key-change-in-production
+JWT_EXPIRES=8h
+PORT=5000
 
 # JWT
 JWT_SECRET=your_secret_key
