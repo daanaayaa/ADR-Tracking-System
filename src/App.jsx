@@ -5,7 +5,7 @@ import Step1 from "./pages/Step1";
 import Step2 from "./pages/Step2";
 import Records from "./pages/Records";
 import Dashboard from "./pages/Dashboard";
-import Report from "./pages/report";
+import Report from "./pages/Report";
 import Login from "./pages/Login";
 import RecordDetail from "./pages/Recorddetail";
 
