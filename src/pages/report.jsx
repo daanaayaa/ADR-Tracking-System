@@ -10,7 +10,7 @@ import {
   ChartTooltip, EmptyChart,
   MonthlyRateCharts, MonthlyCountCharts,
   GradeDist, SymptomMatrix, MonthlySummaryTable,
-} from "./ReportTokens";
+} from "./Reporttokens";
 import { recordApi } from "../services/api";
 
 /* ════════════════════════════════════════════════════════════
